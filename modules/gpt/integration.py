@@ -3,6 +3,7 @@ import openai.error
 import json
 from modules.core import configuration_manager
 
+
 # Словарь для хранения истории диалогов каждого пользователя
 user_conversation_histories = {}
 
@@ -13,10 +14,10 @@ instructions = """
 Каждый ваш ответ должен быть структурирован и представлен строго в следующем порядке:
 - STATUS: Пометьте "ОК", если задача понятна и успешно выполнена. Если возникли какие-либо проблемы или недопонимания, пометьте "ERROR". Этот элемент должен всегда идти первым в вашем ответе.
 - GAMEMASTER: Слова геймастера, описание не мение 200 символов.
-- OPTION 1: Предложите вариант действий агресивного характера. Не более 50 символов
-- OPTION 2: Предложите вариант действий мирного характера. Не более 50 символов
-- OPTION 3: Предложите вариант действий иследовательского характера. Не более 50 символов
-- OPTION 4: Предложите вариант действий который преведет к неожиданным последствиям. Не более 50 символов
+- OPTION 1: Предложите вариант действий агресивного характера. Не более 40 символов
+- OPTION 2: Предложите вариант действий мирного характера. Не более 40 символов
+- OPTION 3: Предложите вариант действий иследовательского характера. Не более 40 символов
+- OPTION 4: Предложите вариант действий который преведет к неожиданным последствиям. Не более 40 символов
 Ответ должен быть строго в формате Json
 все содержание должно быть в виде строки
 """
@@ -52,7 +53,7 @@ def get_image_promt(response_dict, user):
             print(e)
         else:
             return dict['ILLUSTRATION']
-    return result.message.content
+    raise Exception()
 
 def get_image(promt):
     openai.api_key = configuration_manager.get_openai_api_key()
@@ -90,8 +91,8 @@ def check_image_json(json_data):
         if not json_data[key]:
             raise Exception(f"Value for {key} is empty.")
 
-
-def get_gpt_response(message, user):
+user_response_dict ={}
+async def get_gpt_response(message, user):
     # Устанавливаем API-ключ
     openai.api_key = configuration_manager.get_openai_api_key()
 
@@ -127,10 +128,14 @@ def get_gpt_response(message, user):
                 # Сохраняем обновленную историю обратно в словарь
                 user_conversation_histories[user] = conversation_history
         except Exception:
-            print('jib,rf sdlkfnaksldnfla')
+            print('Надо бы залогировать ошибочку')
         else:
             # Если выполнено условие (в данном случае отсутствие исключения), прервем цикл
-            return response_dict
-            break
+            user_response_dict[user.id]=response_dict
+            result=True
+            break 
             # ли все 5 попыток не увенчались успехом, вернем пустой словарь
-    return {}
+    if result:
+        print ('123')
+    else:
+        raise Exception()
