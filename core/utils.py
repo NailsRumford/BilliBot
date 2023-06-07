@@ -1,3 +1,4 @@
+#Утилиты, которые используются по всему проекту.
 import configparser
 
 def get_telegram_token():
