@@ -64,6 +64,7 @@ class GPTAssistant:
         i = 0
         while i < 5:
             try:
+                print(conversation_history)
                 response = await openai.ChatCompletion.acreate(
                     model=settings.MODEL_FOR_GPT_ASSISTANT,
                     messages=conversation_history,
@@ -90,7 +91,7 @@ class GPTAssistant:
             finally:
                 i += 1
 
-    async def get_gpt_start_response(self, prompt_name: str, user_id: str) -> dict:
+    async def get_gpt_start_response(self, prompt: str, user_id: str) -> dict:
         """
         Инициирует новую игру, отправляя начальный запрос к модели GPT-3 и сохраняя историю разговора.
 
@@ -101,10 +102,11 @@ class GPTAssistant:
         Returns:
             dict: Ответ GPT-3 на начальный запрос.
         """
-        instruction_prompt = self.get_instruction_pronts(prompt_name)
+        
+
         conversation_history = [
-            {"role": "assistant", "content": instruction_prompt},]
-        conversation_history.append({"role": "user", "content": 'Начнем игру'})
+            {"role": "assistant", "content": settings.base_pront},]
+        conversation_history.append({"role": "user", "content": prompt})
 
         response_dict, conversation_history = await self.get_gpt_response(conversation_history)
         user_profile = load_user_profile(user_id)
