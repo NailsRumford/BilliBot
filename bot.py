@@ -176,7 +176,6 @@ class MessageProcessor:
 
     async def process_menu_choice(self, update, context):
         text = update.message.text
-        await update.message.reply_text(f"Вы выбрали: {text}")
         user = update.effective_user
         user_history = load_user_profile(user.id)
         buttons = settings.GENRES
@@ -193,7 +192,6 @@ class MessageProcessor:
 
     async def process_choosing_ganre(self, update, context):
         text = update.message.text
-        await update.message.reply_text(f"Вы выбрали: {text}")
         user = update.effective_user
         user_history = load_user_profile(user.id)
         if user_history.start_setting == '📚 Продолжить книгу':
@@ -217,7 +215,6 @@ class MessageProcessor:
 
     async def process_choosing_world(self, update, context):
         text = update.message.text
-        await update.message.reply_text(f"Вы выбрали: {text}")
         user = update.effective_user
         user_history = load_user_profile(user.id)
         worlds_dict = settings.genres_dict[user_history.ganres]
@@ -227,7 +224,6 @@ class MessageProcessor:
             elif user_history.start_setting == '🎭 Создать свою историю':
                 buttons = worlds_dict['worlds'][text]['characters']
         except:
-            await update.message.reply_text(f'Вы выбрали  {text} ')
             buttons = []
         if user_history.game_started:
             await update.message.reply_text('Игра уже запущена, если вы хотите начать новую игру нажмите Restart')
@@ -242,7 +238,6 @@ class MessageProcessor:
 
     async def process_choosing_character(self, update, context):
         text = update.message.text
-        await update.message.reply_text(f"Вы выбрали: {text}")
         user = update.effective_user
         user_history = load_user_profile(user.id)
         worlds_dict = settings.genres_dict[user_history.ganres]
@@ -280,8 +275,7 @@ class MessageProcessor:
             prompt = self.get_world_promt(ganre=user_history.ganres,
                                           world=user_history.world,
                                           character=user_history.character,
-                                          starting_point=user_history.start_point)
-        await update.message.reply_text(f"Вы выбрали: {text}")
+                                         starting_point=user_history.start_point)
         remove_keyboard = ReplyKeyboardRemove()
         self.gif_messages[user.id] = await context.bot.send_animation(
             chat_id=update.effective_chat.id,
